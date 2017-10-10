@@ -42,6 +42,7 @@ import org.kie.server.api.KieServerConstants;
 import org.kie.server.api.model.KieServerConfig;
 import org.kie.server.controller.websocket.common.handlers.InternalMessageHandler;
 import org.kie.server.controller.websocket.common.handlers.KieServerMessageHandler;
+import org.kie.server.services.impl.security.KieVaultReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -147,7 +148,7 @@ public class WebsocketKieServerControllerClient extends Endpoint {
                             super.beforeRequest(headers);
                             
                             String userName = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_USER, "kieserver");
-                            String password = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!");
+                            String password = KieVaultReader.decryptValue(config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_VAULT_NAME));
                             String token = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_TOKEN);
                             
                             if (token != null && !token.isEmpty()) {

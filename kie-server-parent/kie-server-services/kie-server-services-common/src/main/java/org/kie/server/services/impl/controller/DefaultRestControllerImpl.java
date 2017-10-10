@@ -15,12 +15,6 @@
 
 package org.kie.server.services.impl.controller;
 
-import java.net.URLEncoder;
-import java.util.Set;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
 import org.kie.server.api.KieServerConstants;
 import org.kie.server.api.KieServerEnvironment;
 import org.kie.server.api.marshalling.MarshallerFactory;
@@ -35,9 +29,15 @@ import org.kie.server.controller.api.model.KieServerSetup;
 import org.kie.server.services.api.KieControllerNotConnectedException;
 import org.kie.server.services.api.KieControllerNotDefinedException;
 import org.kie.server.services.api.KieServerRegistry;
+import org.kie.server.services.impl.security.KieVaultReader;
 import org.kie.server.services.impl.storage.KieServerState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import java.net.URLEncoder;
+import java.util.Set;
 
 public class DefaultRestControllerImpl implements KieServerController {
 
@@ -183,7 +183,7 @@ public class DefaultRestControllerImpl implements KieServerController {
         String connectAndSyncUrl = controllerUrl + "/server/" + KieServerEnvironment.getServerId();
 
         String userName = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_USER, "kieserver");
-        String password = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!");
+        String password = loadPassword(config);
         String token = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_TOKEN);
 
         try {
@@ -210,7 +210,7 @@ public class DefaultRestControllerImpl implements KieServerController {
             connectAndSyncUrl = controllerUrl + "/server/" + KieServerEnvironment.getServerId()+"/?location="+ URLEncoder.encode(serverInfo.getLocation(), "UTF-8");
 
             String userName = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_USER, "kieserver");
-            String password = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!");
+            String password = loadPassword(config);
             String token = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_TOKEN);
 
             makeHttpDeleteRequestAndCreateCustomResponse(connectAndSyncUrl, null, userName, password, token);
@@ -238,7 +238,7 @@ public class DefaultRestControllerImpl implements KieServerController {
                     String connectAndSyncUrl = controllerUrl + "/management/servers/" + KieServerEnvironment.getServerId() + "/containers/" + containerId + "/status/started";
 
                     String userName = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_USER, "kieserver");
-                    String password = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!");
+                    String password = loadPassword(config);
                     String token = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_TOKEN);
 
                     try {
@@ -269,7 +269,7 @@ public class DefaultRestControllerImpl implements KieServerController {
                     String connectAndSyncUrl = controllerUrl + "/management/servers/" + KieServerEnvironment.getServerId() + "/containers/" + containerId + "/status/stopped";
 
                     String userName = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_USER, "kieserver");
-                    String password = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_PASSWORD, "kieserver1!");
+                    String password = loadPassword(config);
                     String token = config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_TOKEN);
 
                     try {
@@ -284,5 +284,9 @@ public class DefaultRestControllerImpl implements KieServerController {
                 }
             }
         }
+    }
+
+    private String loadPassword(KieServerConfig config) {
+        return KieVaultReader.decryptValue(config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_VAULT_NAME));
     }
 }
