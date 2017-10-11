@@ -287,6 +287,6 @@ public class DefaultRestControllerImpl implements KieServerController {
     }
 
     private String loadPassword(KieServerConfig config) {
-        return KieVaultReader.decryptValue(config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_VAULT_NAME));
+        return KieVaultReader.decryptValue(config.getConfigItemValue(KieServerConstants.CFG_KIE_CONTROLLER_VAULT_NAME, "VAULT::kievb::org.kie.server.controller.pwd::1"));
     }
 }
