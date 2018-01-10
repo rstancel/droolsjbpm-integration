@@ -12,7 +12,7 @@
   <description>KIE Server SpringBoot Sample (includes all KIE Server capabilities)</description>
 
   <properties>
-    <start-class>org.jbpm.springboot.samples.JBPMApplication</start-class>
+    <start-class>org.kie.server.springboot.samples.KieServerApplication</start-class>
   </properties>
 
   <dependencies>
