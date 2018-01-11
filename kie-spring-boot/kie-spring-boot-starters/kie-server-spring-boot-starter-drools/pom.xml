@@ -23,6 +23,14 @@
           <artifactId>jersey-bean-validation</artifactId>
           <groupId>org.glassfish.jersey.ext</groupId>
         </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.hk2.external</groupId>
+          <artifactId>aopalliance-repackaged</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.glassfish.hk2.external</groupId>
+          <artifactId>javax.inject</artifactId>
+        </exclusion>
       </exclusions>
     </dependency>
 
